@@ -13,16 +13,6 @@ const postSchema = new Schema({
         type: Date,
         required: [true, 'provide duration of vote']
     },
-    author: {
-        type: Object
-    },
-    comments: {
-        type: Array,
-        required: false
-    },
-    votes: {
-        type: Object(Array)
-    }
 });
 
 module.exports = model("Posts", postSchema);
