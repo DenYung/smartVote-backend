@@ -4,6 +4,7 @@ const student = require('../controllers/Student');
 const admin = require('../controllers/Admin');
 
 route.post('/admin/register', admin.Register);
+route.post('/admin/login', admin.Login);
 
 route.post('/student/register', student.Register);
 route.post('/student/login', student.Login);

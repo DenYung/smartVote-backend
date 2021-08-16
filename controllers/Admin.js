@@ -1,45 +1,86 @@
 const Admin = require("../models/admin/Admin");
 const { generateAdminToken } = require("../auth/jwt");
-const { validateAdminRegistrationInput } = require('../validators/Validator');
-const { validate } = require("../models/student/Student");
-const bcrypt = require('bcrypt');
-const _ = require('lodash');
+const {
+  validateAdminRegistrationInput,
+  validateLoginInput,
+} = require("../validators/Validator");
+const bcrypt = require("bcrypt");
+const _ = require("lodash");
 
 const Register = async (req, res) => {
-    try {
-        const input = await validateAdminRegistrationInput.validateAsync(req.body);
-        const { email, password, first_name, last_name } = input;
+  try {
+    const input = await validateAdminRegistrationInput.validateAsync(req.body);
+    const { email, password, first_name, last_name } = input;
 
-        //check if user with email already exist
-        const admin = await Admin.findOne({ email });
-        if (admin) return res.status(400).send("admin with email already exist");
+    //check if user with email already exist
+    const admin = await Admin.findOne({ email });
+    if (admin) return res.status(400).send("admin with email already exist");
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+    //hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-        const info = {
-            email,
-            password: hashedPassword,
-            first_name,
-            last_name
-        };
+    //build admin object to be stored in the db
+    const info = {
+      email,
+      password: hashedPassword,
+      first_name,
+      last_name,
+    };
 
-        const result = await Admin.create(info);
+    //save the info in the dp
+    const result = await Admin.create(info);
 
-        const token = generateAdminToken(result);
+    //generate access token for admin
+    const token = generateAdminToken(result);
 
-        const data = {
-            message: 'registration successful',
-            data: _.pick(result, ['first_name', 'last_name', 'email', 'isAdmin']),
-            token
-        }
-        
-        return res.status(200).send(data);
-    } catch (error) {
-        console.log(error);
-        return res.status(400).send(error);
-    }
-}
+    //extract data to be sent to client
+    const data = {
+      message: "registration successful",
+      data: _.pick(result, ["first_name", "last_name", "email", "isAdmin"]),
+      token,
+    };
+
+    return res.status(200).send(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send(error);
+  }
+};
+
+const Login = async (req, res) => {
+  try {
+    //validate admin login input
+    const input = await validateLoginInput.validateAsync(req.body);
+    const { email, password } = input;
+
+    //check if admin with email is available in db
+    const admin = await Admin.findOne({ email });
+    if (!admin) return res.status(404).send("user with email not found");
+
+    //check if password is valid;
+    const hashedPassword = admin.password;
+    const isValidPassword = await bcrypt.compare(password, hashedPassword);
+    if (!isValidPassword)
+      return res.status(400).send("email or password invalid");
+
+    //generate admin token
+    const token = generateAdminToken(admin);
+    
+
+    //build data to be sent to client
+    const data = {
+      first_name: admin.first_name,
+     last_name: admin.last_name,
+      email: admin.email,
+    };
+
+    return res.status(200).send({ message: "login successful", data, token });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+};
 
 module.exports = {
-    Register
-}
+  Register,
+  Login,
+};
