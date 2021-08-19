@@ -1,4 +1,5 @@
 const Admin = require("../models/admin/Admin");
+const Student = require("../models/student/Student");
 const { generateAdminToken } = require("../auth/jwt");
 const {
   validateAdminRegistrationInput,
@@ -65,12 +66,11 @@ const Login = async (req, res) => {
 
     //generate admin token
     const token = generateAdminToken(admin);
-    
 
     //build data to be sent to client
     const data = {
       first_name: admin.first_name,
-     last_name: admin.last_name,
+      last_name: admin.last_name,
       email: admin.email,
     };
 
@@ -80,7 +80,27 @@ const Login = async (req, res) => {
   }
 };
 
+const AllStudents = async (req, res) => {
+  const students = await Student.find().select("-_id -__v  -password");
+  return res.status(200).send(students);
+};
+
+const AllAdmins = async (req, res) => {
+  const admins = await Admin.find().select("-_id  -__v  -password");
+  return res.status(200).send(admins)
+}
+
+const Me = async (req, res) => {
+  const { id } = req.user;
+  const me = await Admin.findById(id).select('-_id -__v -password');
+  return res.status(200).send(me);
+}
+
+
 module.exports = {
   Register,
   Login,
+  AllStudents,
+  AllAdmins,
+  Me
 };

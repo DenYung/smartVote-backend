@@ -60,7 +60,7 @@ const Login = async (req, res) => {
   try {
     //validate login inputs
     const input = await validateLoginInput.validateAsync(req.body);
-      const { email } = input;
+    const { email } = input;
 
     //check if user is available in db
     const student = await Student.findOne({ email });
@@ -74,7 +74,8 @@ const Login = async (req, res) => {
       student.password
     );
 
-    if (!isValidPassword) return res.status(400).send("email or password invalid");
+    if (!isValidPassword)
+      return res.status(400).send("email or password invalid");
 
     //generate accessToken
     const token = generateToken(student);
@@ -85,12 +86,19 @@ const Login = async (req, res) => {
       token,
     });
   } catch (error) {
-      console.log(error);
-      return res.status(400).send(error);
+    console.log(error);
+    return res.status(400).send(error);
   }
+};
+
+const Me = async (req, res) => {
+  const { id } = req.user;
+  const me = await Student.findById(id).select("-_id -__v -password");
+  return res.status(200).send(me);
 };
 
 module.exports = {
   Register,
   Login,
+  Me,
 };
