@@ -3,7 +3,7 @@ const {
   validateStudentRegistrationInput,
   validateLoginInput,
 } = require("../validators/Validator");
-const _ = require("Lodash");
+const _ = require("lodash");
 const { generateToken } = require("../auth/jwt");
 const bcrypt = require("bcrypt");
 
