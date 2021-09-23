@@ -1,9 +1,11 @@
 const Admin = require("../models/admin/Admin");
 const Student = require("../models/student/Student");
+const Poll = require('../models/admin/Poll');
 const { generateAdminToken } = require("../auth/jwt");
 const {
   validateAdminRegistrationInput,
   validateLoginInput,
+  validatePollInput
 } = require("../validators/Validator");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
@@ -97,10 +99,33 @@ const Me = async (req, res) => {
 }
 
 
+const Polls = async (req, res) => {
+  try {
+    const isValid = await validatePollInput.validateAsync(req.body);
+    const { poll, options, duration } = isValid;
+    const author = req.user.id;
+    
+    const newPoll = {
+      poll,
+      options,
+      duration,
+      author
+    }
+
+    const created = await Poll.create(newPoll);
+    return res.status(200).send(created);
+
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+}
+
+
 module.exports = {
   Register,
   Login,
   AllStudents,
   AllAdmins,
-  Me
+  Me,
+  Polls
 };

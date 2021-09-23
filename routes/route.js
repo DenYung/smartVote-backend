@@ -9,6 +9,7 @@ route.post('/admin/login', admin.Login);
 route.get('/admin/students', [verifyToken, verifyAdminRole], admin.AllStudents);
 route.get('/admin/admins', [verifyToken, verifyAdminRole], admin.AllAdmins);
 route.get('/admin/me', [verifyToken, verifyAdminRole], admin.Me);
+route.post('/admin/poll', [verifyToken, verifyAdminRole], admin.Polls);
 
 route.post('/student/register', student.Register);
 route.post('/student/login', student.Login);

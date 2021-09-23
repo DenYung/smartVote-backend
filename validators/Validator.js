@@ -20,9 +20,16 @@ const validateAdminRegistrationInput = Joi.object({
   password: Joi.string().required(),
 });
 
+const validatePollInput = Joi.object({
+  poll: Joi.string().required(),
+  options: Joi.string().required(),
+  duration: Joi.number().required()
+})
+
 module.exports = {
     validateLoginInput,
     validateStudentRegistrationInput,
-    validateAdminRegistrationInput
+  validateAdminRegistrationInput,
+    validatePollInput
 }
 

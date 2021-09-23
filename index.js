@@ -6,6 +6,7 @@ const route = require('./routes/route');
 
 //connect to mongoDB
 require("./dbConfig/dbConnect");
+require("./prod/Prod")(app);
 
 //configure middlewares
 app.use(cors());

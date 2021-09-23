@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const config = require('config');
 
-mongoose.connect("mongodb://localhost:27017/smartVote",{
+mongoose.connect(config.get('db'),{
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
