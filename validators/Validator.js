@@ -1,8 +1,8 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
 const validateLoginInput = Joi.object({
-    email: Joi.string().required(),
-    password: Joi.string().required()
+  email: Joi.string().required(),
+  password: Joi.string().required(),
 });
 
 const validateStudentRegistrationInput = Joi.object({
@@ -20,16 +20,8 @@ const validateAdminRegistrationInput = Joi.object({
   password: Joi.string().required(),
 });
 
-const validatePollInput = Joi.object({
-  poll: Joi.string().required(),
-  options: Joi.string().required(),
-  duration: Joi.number().required()
-})
-
 module.exports = {
-    validateLoginInput,
-    validateStudentRegistrationInput,
+  validateLoginInput,
+  validateStudentRegistrationInput,
   validateAdminRegistrationInput,
-    validatePollInput
-}
-
+};

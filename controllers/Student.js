@@ -1,4 +1,5 @@
 const Student = require("../models/student/Student");
+const Poll = require("../models/admin/Poll");
 const {
   validateStudentRegistrationInput,
   validateLoginInput,
@@ -97,8 +98,32 @@ const Me = async (req, res) => {
   return res.status(200).send(me);
 };
 
+const Vote = async (req, res) => {
+  try {
+    let id = req.body.id;
+    let choice = req.body.choice;
+
+    //get the poll using it
+    let poll = await Poll.findById(id);
+
+    //increase the already existing number by 1
+    let num = parseInt(poll.options[`${choice}`].toString()) + 1;
+
+    //make the options field equals the num
+    //the rest is history
+    poll.options[`${choice}`] = num;
+    poll.markModified("options");
+    let result = await poll.save();
+
+    return res.status(200).send(result);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+};
+
 module.exports = {
   Register,
   Login,
   Me,
+  Vote,
 };

@@ -101,20 +101,27 @@ const Me = async (req, res) => {
 
 const Polls = async (req, res) => {
   try {
-    const isValid = await validatePollInput.validateAsync(req.body);
-    const { poll, options, duration } = isValid;
-    const author = req.user.id;
+    const poll = req.body.poll;
+    let arr = req.body.options;
     
-    const newPoll = {
-      poll,
-      options,
-      duration,
-      author
+    let options = {};
+    for (let i = 0; i < arr.length; i++) {
+      options[arr[i]] = 0;
     }
-
-    const created = await Poll.create(newPoll);
+    
+    const created = await Poll.create({ poll, options });
     return res.status(200).send(created);
 
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+}
+
+
+const AllPolls = async (req, res) => {
+  try {
+       const polls = await Poll.find().select("-_id -__v");
+       return res.status(200).send(polls);
   } catch (error) {
     return res.status(400).send(error);
   }
@@ -127,5 +134,6 @@ module.exports = {
   AllStudents,
   AllAdmins,
   Me,
-  Polls
+  Polls,
+  AllPolls
 };
