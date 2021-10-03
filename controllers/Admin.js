@@ -117,7 +117,9 @@ const Polls = async (req, res) => {
 
 const AllPolls = async (req, res) => {
   try {
-    const polls = await Poll.find().select("-_id -__v");
+    const polls = await Poll.find()
+      .sort({ createdAt: "desc" })
+      .select("-_id -__v");
     return res.status(200).send(polls);
   } catch (error) {
     return res.status(400).send(error);
