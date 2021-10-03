@@ -1,11 +1,11 @@
 const Admin = require("../models/admin/Admin");
 const Student = require("../models/student/Student");
-const Poll = require('../models/admin/Poll');
+const Poll = require("../models/admin/Poll");
 const { generateAdminToken } = require("../auth/jwt");
 const {
   validateAdminRegistrationInput,
   validateLoginInput,
-  validatePollInput
+  validatePollInput,
 } = require("../validators/Validator");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
@@ -89,44 +89,40 @@ const AllStudents = async (req, res) => {
 
 const AllAdmins = async (req, res) => {
   const admins = await Admin.find().select("-_id  -__v  -password");
-  return res.status(200).send(admins)
-}
+  return res.status(200).send(admins);
+};
 
 const Me = async (req, res) => {
   const { id } = req.user;
-  const me = await Admin.findById(id).select('-_id -__v -password');
+  const me = await Admin.findById(id).select("-_id -__v -password");
   return res.status(200).send(me);
-}
-
+};
 
 const Polls = async (req, res) => {
   try {
     const poll = req.body.poll;
     let arr = req.body.options;
-    
+
     let options = {};
     for (let i = 0; i < arr.length; i++) {
       options[arr[i]] = 0;
     }
-    
+
     const created = await Poll.create({ poll, options });
     return res.status(200).send(created);
-
   } catch (error) {
     return res.status(400).send(error);
   }
-}
-
+};
 
 const AllPolls = async (req, res) => {
   try {
-       const polls = await Poll.find().select("-_id -__v");
-       return res.status(200).send(polls);
+    const polls = await Poll.find().select("-_id -__v");
+    return res.status(200).send(polls);
   } catch (error) {
     return res.status(400).send(error);
   }
-}
-
+};
 
 module.exports = {
   Register,
@@ -135,5 +131,5 @@ module.exports = {
   AllAdmins,
   Me,
   Polls,
-  AllPolls
+  AllPolls,
 };
