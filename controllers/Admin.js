@@ -100,15 +100,16 @@ const Me = async (req, res) => {
 
 const Polls = async (req, res) => {
   try {
-    const poll = req.body.poll;
-    let arr = req.body.options;
+    const title = req.body.title;
+    let arr = req.body.participants;
+    let pics = req.body.pics;
 
-    let options = {};
+    let participants = {};
     for (let i = 0; i < arr.length; i++) {
-      options[arr[i]] = 0;
+      participants[arr[i]] = 0;
     }
 
-    const created = await Poll.create({ poll, options });
+    const created = await Poll.create({ title, participants, pics });
     return res.status(200).send(created);
   } catch (error) {
     return res.status(400).send(error);
