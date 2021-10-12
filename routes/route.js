@@ -16,5 +16,6 @@ route.post('/student/register', student.Register);
 route.post('/student/login', student.Login);
 route.get('/student/me', verifyToken, student.Me);
 route.post('/student/vote', verifyToken, student.Vote);
+route.get('/student/feed', verifyToken, student.Feed);
 
 module.exports = route;

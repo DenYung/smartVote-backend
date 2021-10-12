@@ -107,7 +107,7 @@ const Vote = async (req, res) => {
     let poll = await Poll.findById(id);
 
     //increase the already existing number by 1
-    let num = parseInt(poll.options[`${choice}`].toString()) + 1;
+    let num = parseInt(poll.participants[`${choice}`].toString()) + 1;
 
     //make the options field equals the num
     //the rest is history
@@ -121,9 +121,23 @@ const Vote = async (req, res) => {
   }
 };
 
+const Feed = async (req, res) => {
+  try {
+    
+    let poll = await Poll.find();
+    return res.status(200).send(poll);
+
+  } catch (error) {
+    return res.status(400).send(error)
+  }
+}
+
+
+
 module.exports = {
   Register,
   Login,
   Me,
   Vote,
+  Feed
 };
