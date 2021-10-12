@@ -111,8 +111,8 @@ const Vote = async (req, res) => {
 
     //make the options field equals the num
     //the rest is history
-    poll.options[`${choice}`] = num;
-    poll.markModified("options");
+    poll.participants[`${choice}`] = num;
+    poll.markModified("participants");
     let result = await poll.save();
 
     return res.status(200).send(result);
@@ -124,7 +124,7 @@ const Vote = async (req, res) => {
 const Feed = async (req, res) => {
   try {
     
-    let poll = await Poll.find();
+    let poll = await Poll.find().sort({ createdAt: "desc" });
     return res.status(200).send(poll);
 
   } catch (error) {
